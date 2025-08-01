@@ -10,31 +10,23 @@ local defaults = {
 function M.setup(opts)
     opts = opts or defaults
 
-    if vim.iter(opts.root_markers):any(vim.uv.fs_stat) then
+    if not vim.iter(opts.root_markers):all(vim.uv.fs_stat) then
         return
     end
 
-    for i = string.byte("A"), string.byte("Z") do
-        local c = string.char(i)
-        vim.keymap.set({ "n", "v" }, "m" .. c, function()
-            local buf = vim.api.nvim_get_current_buf()
-            local cur = vim.api.nvim_win_get_cursor(0)
-            vim.api.nvim_buf_set_mark(buf, c, cur[1], cur[2], {})
-        end)
-    end
-
     local cwd = vim.fn.getcwd()
-    local shada = vim.fs.basename(cwd) .. ".shada"
-    local pshada = vim.fn.stdpath("data") .. "/pmarks/" .. shada
+    local dir = vim.fn.stdpath("data") .. "/pshada/"
+    local shada = dir .. vim.fs.basename(cwd) .. ".shada"
 
-    if vim.uv.fs_stat(pshada) then
-        vim.cmd("rsh! " .. pshada)
+    vim.uv.fs_mkdir(dir, tonumber("755", 8))
+    if vim.uv.fs_stat(shada) then
+        vim.cmd("rsh! " .. shada)
     end
 
     vim.api.nvim_create_autocmd("VimLeavePre", {
         group = vim.api.nvim_create_augroup("pshada", { clear = true }),
         callback = function()
-            vim.cmd("wsh! " .. pshada)
+            vim.cmd("wsh! " .. shada)
         end,
     })
 end
