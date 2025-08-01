@@ -1,7 +1,7 @@
-# pmarks.nvim
+# pshada.nvim
 
-per project marks
+per project shada
 
 ```lua
-vim.pack.add({"https://github.com/mart-mihkel/pmarks.nvim"})
+vim.pack.add({"https://github.com/mart-mihkel/pshada.nvim"})
 ```
