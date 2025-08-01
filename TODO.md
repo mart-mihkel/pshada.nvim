@@ -1,0 +1,4 @@
+- root markers * support
+- docs
+- tests
+- CI
